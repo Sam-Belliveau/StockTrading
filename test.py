@@ -14,8 +14,8 @@ from RobotTrader import TrendRobot
 ###### BEGIN : CONFIG ######
 ############################
 
-TICKER = 'aapl'
-START = datetime(2015,1,1)
+TICKER = 'amd'
+START = datetime(2010,1,1)
 
 START_WALLET = 50000
 
@@ -25,12 +25,15 @@ BUY_MARGIN = 1.05
 SELL_RATE = 21
 SELL_MARGIN = 0.975
 
-SMOOTH_ALGO = SAlgo.MovingAverage(50)
-# SMOOTH_ALGO = SAlgo.WeightedMovingAverage(32)
-# SMOOTH_ALGO = SAlgo.ExponentialMovingAverage(12)
+DUAL_ALGORITHM = False
 
-BUY_SMOOTH_ALGO = SAlgo.MovingAverage(50)
-SELL_SMOOTH_ALGO = SAlgo.ExponentialMovingAverage(8)
+if DUAL_ALGORITHM:
+    BUY_SMOOTH_ALGO = SAlgo.MovingAverage(50)
+    SELL_SMOOTH_ALGO = SAlgo.ExponentialMovingAverage(8)
+else:
+    # SMOOTH_ALGO = SAlgo.MovingAverage(50)
+    # SMOOTH_ALGO = SAlgo.WeightedMovingAverage(32)
+    SMOOTH_ALGO = SAlgo.ExponentialMovingAverage(16)
 
 ############################
 ####### END : CONFIG #######
@@ -42,7 +45,8 @@ def simulate_robot(in_robot):
     total_wallet = {}
     raw_wallet = {}
     raw_stock_price = {}
-    smooth_stock_price = {}
+    smooth_stock_price_a = {}
+    smooth_stock_price_b = {}
 
     ### While there is still stock data,   ###
     ### Get the robot to go through it and ###
@@ -63,11 +67,23 @@ def simulate_robot(in_robot):
 
         # get the raw and the stock prices
         raw_stock_price[date] = in_robot.get_stock_price()
-        smooth_stock_price[date] = in_robot.get_smooth_stock_price()
+
+        # Check if you should record two smooth values or just one
+        if DUAL_ALGORITHM:
+            smooth_stock_price_a[date] = in_robot.get_buy_smooth_stock_price()
+            smooth_stock_price_b[date] = in_robot.get_sell_smooth_stock_price()
+        else:
+            smooth_stock_price_a[date] = in_robot.get_smooth_stock_price()
 
     # Plot all of the data
     pandas.Series(raw_stock_price).plot(label='Stock Price')
-    pandas.Series(smooth_stock_price).plot(label='Smooth Stock Price')
+
+    if DUAL_ALGORITHM:
+        pandas.Series(smooth_stock_price_a).plot(label='Smooth Stock Price [BUY]')
+        pandas.Series(smooth_stock_price_b).plot(label='Smooth Stock Price [SELL]')
+    else:
+        pandas.Series(smooth_stock_price_a).plot(label='Smooth Stock Price')
+
     pandas.Series(total_wallet).plot(label='Total Wallet / ' + str(WALLET_SCALE))
     pandas.Series(raw_wallet).plot(label='Wallet / ' + str(WALLET_SCALE))
     #pandas.Series(stocks_held).plot(label='Stocks Held / ' + str(STOCKS_HELD_SCALE))
@@ -87,20 +103,19 @@ my_stock = HistoricalStock(ticker=TICKER, start=START)
 my_broker = Broker(stock=my_stock, wallet=START_WALLET)
 
 ### Create robot class and give it all the parameters ###
-my_robot = TrendRobot(
-    broker=my_broker, smoother=SMOOTH_ALGO, 
-    buy_rate=BUY_RATE, sell_rate=SELL_RATE,
-    buy_margin=BUY_MARGIN, sell_margin=SELL_MARGIN
-)
-
-# Robot with two trends to look at
-my_dual_robot = DualTrendRobot(
-    broker=my_broker, 
-    buy_smoother=BUY_SMOOTH_ALGO,
-    sell_smoother=SELL_SMOOTH_ALGO, 
-    buy_rate=BUY_RATE, sell_rate=SELL_RATE,
-    buy_margin=BUY_MARGIN, sell_margin=SELL_MARGIN
-)
+if DUAL_ALGORITHM:
+    my_robot = DualTrendRobot(
+        broker=my_broker, 
+        buy_smoother=BUY_SMOOTH_ALGO,
+        sell_smoother=SELL_SMOOTH_ALGO, 
+        buy_rate=BUY_RATE, sell_rate=SELL_RATE,
+        buy_margin=BUY_MARGIN, sell_margin=SELL_MARGIN
+    )
+else:
+    my_robot = TrendRobot(
+        broker=my_broker, smoother=SMOOTH_ALGO, 
+        buy_rate=BUY_RATE, sell_rate=SELL_RATE,
+        buy_margin=BUY_MARGIN, sell_margin=SELL_MARGIN
+    )
 
 simulate_robot(my_robot)
-# simulate_robot(my_dual_robot)
