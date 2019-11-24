@@ -26,7 +26,7 @@ class MovingAverage(Smoother):
 # Weighted Moving Average Smoother Class
 class WeightedMovingAverage(Smoother):
     def __init__(self, size):
-        self._values = []
+        self._values = [0]
         self._max_size = size
 
     def smooth(self, next_price):

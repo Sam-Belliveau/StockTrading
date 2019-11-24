@@ -39,7 +39,7 @@ else:
 ####### END : CONFIG #######
 ############################
 
-def simulate_robot(in_robot):
+def simulate_robot_and_graph(in_robot):
     ### Keep track of data in these classes ###
     stocks_held = {}
     total_wallet = {}
@@ -92,6 +92,14 @@ def simulate_robot(in_robot):
     plt.legend()
     plt.show()
 
+    return in_robot
+
+# Simulate the robot going through the stocks
+def simulate_robot(in_robot):
+    while not in_robot.done():
+        in_robot.simulate_day()
+    return in_robot
+
 ### The amount that the data will be scaled on the graph
 STOCKS_HELD_SCALE = 10
 WALLET_SCALE = 1000
@@ -118,4 +126,5 @@ else:
         buy_margin=BUY_MARGIN, sell_margin=SELL_MARGIN
     )
 
-simulate_robot(my_robot)
+# print(simulate_robot(my_robot).get_total_wallet())
+print(simulate_robot_and_graph(my_robot).get_total_wallet())
