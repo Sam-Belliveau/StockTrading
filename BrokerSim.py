@@ -77,3 +77,7 @@ class Broker:
     # Get total amount of money in wallet, with stock
     def get_total_wallet(self):
         return self.get_raw_wallet() + self.get_held_stocks_prices()
+
+    # Get the underlying stock class
+    def get_stock(self):
+        return self._stock
