@@ -13,20 +13,20 @@ from RobotTrader import TrendRobot
 ###### BEGIN : CONFIG ######
 ############################
 
-TICKER = 'amd'
+TICKER = 'aapl'
 START = datetime(2015,1,1)
 
 START_WALLET = 50000
 
-BUY_RATE = 10
+BUY_RATE = 13
 BUY_MARGIN = 1.05
 
-SELL_RATE = 16
-SELL_MARGIN = 1.01
+SELL_RATE = 21
+SELL_MARGIN = 0.975
 
-# SMOOTH_ALGO = SAlgo.MovingAverage(32)
+SMOOTH_ALGO = SAlgo.MovingAverage(50)
 # SMOOTH_ALGO = SAlgo.WeightedMovingAverage(32)
-SMOOTH_ALGO = SAlgo.ExponentialMovingAverage(12)
+# SMOOTH_ALGO = SAlgo.ExponentialMovingAverage(12)
 
 ############################
 ####### END : CONFIG #######
