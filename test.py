@@ -127,4 +127,4 @@ else:
     )
 
 # print(simulate_robot(my_robot).get_total_wallet())
-print(simulate_robot_and_graph(my_robot).get_total_wallet())
+print(simulate_robot(my_robot).get_total_wallet())

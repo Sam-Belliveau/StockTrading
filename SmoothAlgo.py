@@ -21,12 +21,12 @@ class MovingAverage(Smoother):
         if len(self._values) > self._max_size:
             self._values.pop(0)
         
-        return sum(self._values) / len(self._values)
+        return sum(self._values) / max(1, len(self._values))
 
 # Weighted Moving Average Smoother Class
 class WeightedMovingAverage(Smoother):
     def __init__(self, size):
-        self._values = [0]
+        self._values = []
         self._max_size = size
 
     def smooth(self, next_price):
@@ -38,7 +38,7 @@ class WeightedMovingAverage(Smoother):
         for i in range(0, len(self._values)):
             divisor += i
             total += i * self._values[i]
-        return total / divisor
+        return total / max(1, divisor)
 
 # Exponential Moving Average Smoother Class
 class ExponentialMovingAverage(Smoother):

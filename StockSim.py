@@ -12,6 +12,9 @@ import pandas_datareader.data as web
 # This class holds the basic outline of
 # how the stock should be interacted with
 class Stock:
+    def get_ticker(self):
+        pass
+
     def update_price(self):
         pass
 
@@ -34,6 +37,10 @@ class HistoricalStock(Stock):
         self._share_data = self._get_share_data(ticker, start=start)
         self._max_day = len(self._share_data.values)
         self._day = 0
+
+    # Return the ticker name of the stock
+    def get_ticker(self):
+        return self._ticker
 
     # Go to next day
     def update_price(self):
