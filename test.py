@@ -13,15 +13,15 @@ from RobotTrader import TrendRobot
 ###### BEGIN : CONFIG ######
 ############################
 
-TICKER = 'AMD'
-START = datetime(2018,2,1)
+TICKER = 'aapl'
+START = datetime(2015,1,1)
 
 START_WALLET = 50000
 
-BUY_RATE = 130000009000
+BUY_RATE = 13
 BUY_MARGIN = 1.08
 
-SELL_RATE = 2100000000
+SELL_RATE = 21
 SELL_MARGIN = 0.9
 
 SMOOTH_ALGO = SAlgo.MovingAverage(6)
